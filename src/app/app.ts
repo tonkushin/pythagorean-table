@@ -33,10 +33,15 @@ export class App {
         const _min = min ?? 0;
         const _max = max ?? 0;
 
-        const table: number[][] = [];
+        const header: (number | null)[] = [null];
+        const table: (number | null)[][] = [header];
+
+        for (let col = _min; col <= _max; col++) {
+            header.push(col);
+        }
 
         for (let row = _min; row <= _max; row++) {
-            const currentRow: number[] = [];
+            const currentRow: (number | null)[] = [row];
 
             for (let col = _min; col <= _max; col++) {
                 currentRow.push(row * col);
