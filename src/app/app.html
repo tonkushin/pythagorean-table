@@ -1,17 +1,43 @@
-<div class="container">
-    <h1>Таблица Пифагора</h1>
-    <h3>Идея: Тонкушин Георгий</h3>
-    <p>В таблицу можно внести размерность (диапазон)</p>
+<main class="container">
+  <h1>Таблица Пифагора</h1>
+  <p>Заполните таблицу: введите результат умножения в пустую ячейку.</p>
 
-    <table border="1">
-        @for (row of table(); track $index) {
-            <tr>
-                @for (cell of row; track $index) {
-                    <td>{{ cell }}</td>
-                }
-            </tr>
+  @if (errorMessage(); as message) {
+    <p class="error-message" role="alert">{{ message }}</p>
+  }
+
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">×</th>
+        @for (column of factors; track column) {
+          <th scope="col">{{ column }}</th>
         }
-    </table>
-</div>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of factors; track row) {
+        <tr>
+          <th scope="row">{{ row }}</th>
+          @for (column of factors; track column) {
+            @let key = cellKey(row, column);
+            <td>
+              <input
+                #answerInput
+                type="number"
+                inputmode="numeric"
+                [attr.aria-label]="row + ' умножить на ' + column"
+                [attr.aria-invalid]="invalidAnswers()[key] ? 'true' : null"
+                [class.invalid-answer]="invalidAnswers()[key]"
+                [value]="invalidAnswers()[key] ?? answers()[key] ?? ''"
+                (input)="validateAnswer(row, column, answerInput.value)"
+              />
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</main>
 
-<router-outlet/>
+<router-outlet />

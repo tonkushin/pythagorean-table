@@ -1,28 +1,43 @@
 :host {
   display: block;
-  padding-top: 50px;
+  padding: 50px 16px;
 }
 
 .container {
   max-width: 1200px;
-  margin-right: auto;
-  margin-left: auto;
+  margin: 0 auto;
 }
 
-.controls {
-  display: flex;
-  gap: 40px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+.error-message {
+  font-weight: 600;
+  color: #b42318;
 }
 
+table {
+  border-collapse: collapse;
+}
+
+th,
 td {
   padding: 5px;
-  vertical-align: center;
   text-align: center;
+  border: 1px solid #d0d5dd;
 }
 
-tr:first-child td,
-td:first-child {
-  background-color: lightgray;
+th {
+  background-color: #f2f4f7;
+}
+
+input {
+  width: 3rem;
+  padding: 4px;
+  text-align: center;
+  border: 1px solid #98a2b3;
+  border-radius: 4px;
+}
+
+.invalid-answer {
+  color: #b42318;
+  background-color: #fef3f2;
+  border-color: #b42318;
 }

@@ -1,36 +1,64 @@
-import {Component, computed} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
-import {FormsModule} from "@angular/forms";
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+type Answers = Record<string, number>;
+type InvalidAnswers = Record<string, string>;
 
 @Component({
-    selector: 'pt-root',
-    imports: [RouterOutlet, FormsModule],
-    templateUrl: './app.html',
-    styleUrl: './app.scss'
+  selector: 'pt-root',
+  imports: [RouterOutlet],
+  templateUrl: './app.html',
+  styleUrl: './app.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-    readonly table = computed(() => {
-        const {min, max} = this.model();
-        const _min = min ?? 0;
-        const _max = max ?? 0;
+  readonly factors = Array.from({ length: 9 }, (_, index) => index + 1);
+  readonly answers = signal<Answers>({});
+  readonly invalidAnswers = signal<InvalidAnswers>({});
+  readonly errorMessage = computed(() =>
+    Object.keys(this.invalidAnswers()).length > 0
+      ? 'Неверный ответ. Проверьте произведение и попробуйте снова.'
+      : null,
+  );
 
-        const header: (number | null)[] = [null];
-        const table: (number | null)[][] = [header];
+  validateAnswer(row: number, column: number, value: string): void {
+    const key = this.cellKey(row, column);
+    const trimmedValue = value.trim();
 
-        for (let col = _min; col <= _max; col++) {
-            header.push(col);
-        }
+    if (trimmedValue === '') {
+      this.removeAnswer(key);
+      this.removeInvalidAnswer(key);
+      return;
+    }
 
-        for (let row = _min; row <= _max; row++) {
-            const currentRow: (number | null)[] = [row];
+    const answer = Number(trimmedValue);
 
-            for (let col = _min; col <= _max; col++) {
-                currentRow.push(row * col);
-            }
+    if (!Number.isInteger(answer) || answer !== row * column) {
+      this.removeAnswer(key);
+      this.invalidAnswers.update((invalidAnswers) => ({
+        ...invalidAnswers,
+        [key]: value,
+      }));
+      return;
+    }
 
-            table.push(currentRow);
-        }
+    this.answers.update((answers) => ({ ...answers, [key]: answer }));
+    this.removeInvalidAnswer(key);
+  }
 
-        return table;
-    });
+  cellKey(row: number, column: number): string {
+    return `${row}-${column}`;
+  }
+
+  private removeAnswer(key: string): void {
+    this.answers.update((answers) => this.withoutKey(answers, key));
+  }
+
+  private removeInvalidAnswer(key: string): void {
+    this.invalidAnswers.update((invalidAnswers) => this.withoutKey(invalidAnswers, key));
+  }
+
+  private withoutKey<T>(values: Record<string, T>, key: string): Record<string, T> {
+    return Object.fromEntries(Object.entries(values).filter(([entryKey]) => entryKey !== key));
+  }
 }

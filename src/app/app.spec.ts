@@ -8,16 +8,35 @@ describe('App', () => {
     }).compileComponents();
   });
 
-  it('should create the app', () => {
+  it('should render an empty multiplication table', () => {
     const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    fixture.detectChanges();
+
+    const inputs = fixture.nativeElement.querySelectorAll('input');
+
+    expect(inputs).toHaveLength(81);
+    expect(inputs[0].value).toBe('');
   });
 
-  it('should render title', async () => {
+  it('should save a correct answer', () => {
     const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, pythagorean-table');
+    const app = fixture.componentInstance;
+
+    app.validateAnswer(2, 3, '6');
+
+    expect(app.answers()).toEqual({ '2-3': 6 });
+    expect(app.invalidAnswers()).toEqual({});
+  });
+
+  it('should show an error for an incorrect answer', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+
+    app.validateAnswer(2, 3, '5');
+    fixture.detectChanges();
+
+    expect(app.answers()).toEqual({});
+    expect(app.invalidAnswers()).toEqual({ '2-3': '5' });
+    expect(fixture.nativeElement.querySelector('.error-message')?.textContent).toContain('Неверный ответ');
   });
 });
