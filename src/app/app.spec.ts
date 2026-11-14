@@ -8,6 +8,8 @@ describe('App', () => {
     }).compileComponents();
   });
 
+  afterEach(() => vi.useRealTimers());
+
   it('should render an empty multiplication table', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
@@ -18,25 +20,41 @@ describe('App', () => {
     expect(inputs[0].value).toBe('');
   });
 
-  it('should save a correct answer', () => {
+  it('should validate an incorrect answer after 300 milliseconds', async () => {
+    vi.useFakeTimers();
     const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
+    fixture.detectChanges();
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
 
-    app.validateAnswer(2, 3, '6');
+    input.value = '5';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    await vi.advanceTimersByTimeAsync(299);
 
-    expect(app.answers()).toEqual({ '2-3': 6 });
-    expect(app.invalidAnswers()).toEqual({});
-  });
+    expect(fixture.componentInstance.answerForm[0][0]().invalid()).toBe(false);
 
-  it('should show an error for an incorrect answer', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-
-    app.validateAnswer(2, 3, '5');
+    await vi.advanceTimersByTimeAsync(1);
     fixture.detectChanges();
 
-    expect(app.answers()).toEqual({});
-    expect(app.invalidAnswers()).toEqual({ '2-3': '5' });
+    expect(fixture.componentInstance.answerForm[0][0]().invalid()).toBe(true);
     expect(fixture.nativeElement.querySelector('.error-message')?.textContent).toContain('Неверный ответ');
+  });
+
+  it('should validate only the final value after the debounce', async () => {
+    vi.useFakeTimers();
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    const input = fixture.nativeElement.querySelectorAll('input')[21] as HTMLInputElement;
+
+    input.value = '1';
+    input.dispatchEvent(new Event('input'));
+    await vi.advanceTimersByTimeAsync(100);
+    input.value = '12';
+    input.dispatchEvent(new Event('input'));
+    await vi.advanceTimersByTimeAsync(300);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.answerValues()[2][3]).toBe('12');
+    expect(fixture.componentInstance.answerForm[2][3]().invalid()).toBe(false);
   });
 });
