@@ -1,7 +1,7 @@
 import {Component, computed, signal} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {FormsModule} from "@angular/forms";
-import {form, FormField, FormRoot, max, min,} from '@angular/forms/signals';
+import {form, max, min,} from '@angular/forms/signals';
 
 export interface RangeModel {
     min: number | null;
@@ -10,7 +10,7 @@ export interface RangeModel {
 
 @Component({
     selector: 'pt-root',
-    imports: [RouterOutlet, FormsModule, FormField, FormRoot],
+    imports: [RouterOutlet, FormsModule], // FormField, FormRoot
     templateUrl: './app.html',
     styleUrl: './app.scss'
 })
