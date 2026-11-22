@@ -1,28 +1,124 @@
 :host {
   display: block;
-  padding-top: 50px;
+  padding: 50px 16px;
 }
 
 .container {
   max-width: 1200px;
-  margin-right: auto;
-  margin-left: auto;
+  margin: 0 auto;
 }
 
-.controls {
+.error-message {
+  font-weight: 600;
+  color: #b42318;
+}
+
+.difficulty-form {
+  display: grid;
+  gap: 8px;
+  max-width: 680px;
+  padding: 12px 16px;
+  margin: 20px 0;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+}
+
+.difficulty-form label {
   display: flex;
-  gap: 40px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  gap: 8px;
+  align-items: flex-start;
 }
 
+.difficulty-form input {
+  width: auto;
+  margin: 3px 0 0;
+}
+
+.progress-message {
+  font-weight: 600;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
 td {
   padding: 5px;
-  vertical-align: center;
   text-align: center;
+  border: 1px solid #d0d5dd;
 }
 
-tr:first-child td,
-td:first-child {
-  background-color: lightgray;
+th {
+  background-color: #f2f4f7;
+}
+
+.first-column {
+  min-width: 20px;
+}
+
+.col {
+  min-width: 70px;
+}
+
+input {
+  width: 3rem;
+  padding: 4px;
+  text-align: center;
+  border: 1px solid #98a2b3;
+  border-radius: 4px;
+}
+
+.invalid-answer {
+  color: #b42318;
+  background-color: #fef3f2;
+  border-color: #b42318;
+}
+
+.result-message {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  max-width: 560px;
+  padding: 16px;
+  margin-top: 24px;
+  border-radius: 8px;
+}
+
+.result-message h2,
+.result-message p {
+  margin: 0;
+}
+
+.result-message p {
+  margin-top: 4px;
+}
+
+.success-message {
+  color: #027a48;
+  background-color: #ecfdf3;
+}
+
+.success-message svg {
+  flex: 0 0 72px;
+  width: 72px;
+  fill: #fdb022;
+  stroke: #b54708;
+  stroke-width: 5;
+}
+
+.failure-message {
+  display: block;
+  color: #7a271a;
+  background-color: #fef3f2;
+}
+
+button {
+  padding: 6px 10px;
+  margin-top: 12px;
+  color: #fff;
+  cursor: pointer;
+  background-color: #344054;
+  border: 0;
+  border-radius: 4px;
 }
