@@ -56,6 +56,7 @@ describe('App', () => {
 
     expect(fixture.nativeElement.textContent).toContain('Молодец!');
     expect(fixture.nativeElement.textContent).toContain('Ты прошел таблицу.');
+    expect(fixture.nativeElement.querySelector('.success-message button')?.textContent).toContain('Начать заново');
   });
 
   it('should show an encouraging message when time runs out on the third level', async () => {
