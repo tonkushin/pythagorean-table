@@ -40,6 +40,7 @@
         <thead>
         <tr>
             <th class="first-column" scope="col">×</th>
+            ¡
             @for (column of factors; track column) {
                 <th class="col" scope="col">{{ column }}</th>
             }
@@ -78,7 +79,7 @@
             <div>
                 <h2>Молодец!</h2>
                 <p>Ты прошел таблицу.</p>
-        <button type="button" (click)="restartGame()">Начать заново</button>
+                <button type="button" (click)="restartGame()">Начать заново</button>
             </div>
         </section>
     } @else if (gameStatus() === 'lost') {
