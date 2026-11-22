@@ -2,7 +2,35 @@
   <h1>Таблица Пифагора</h1>
   <p>Заполните таблицу: введите результат умножения в пустую ячейку.</p>
 
-  @if (answerForm().invalid()) {
+  <fieldset class="difficulty-form" [disabled]="gameStatus() !== 'playing'">
+    <legend>Выберите уровень сложности</legend>
+    @for (difficulty of difficulties; track difficulty.level) {
+      <label>
+        <input
+          type="radio"
+          name="difficulty"
+          [checked]="selectedLevel() === difficulty.level"
+          (change)="selectLevel(difficulty.level)"
+        />
+        <span>
+          <strong>{{ difficulty.title }}</strong>
+          — {{ difficulty.description }}
+        </span>
+      </label>
+    }
+  </fieldset>
+
+  @if (selectedDifficulty().errorLimit !== null && gameStatus() === 'playing') {
+    <p class="progress-message">
+      Ошибки: {{ errorCount() }} из {{ selectedDifficulty().errorLimit }}
+    </p>
+  }
+
+  @if (selectedDifficulty().timeLimit !== null && gameStatus() === 'playing') {
+    <p class="progress-message">Осталось времени: {{ formattedTime() }}</p>
+  }
+
+  @if (answerForm().invalid() && gameStatus() === 'playing') {
     <p class="error-message" role="alert">
       Неверный ответ. Проверьте произведение и попробуйте снова.
     </p>
@@ -23,19 +51,42 @@
           <th scope="row">{{ row }}</th>
           @for (column of factors; track column) {
             <td>
-              <input
-                type="number"
-                inputmode="numeric"
-                [attr.aria-label]="row + ' умножить на ' + column"
-                [class.invalid-answer]="answerForm[row - 1][column - 1]().invalid()"
-                [formField]="answerForm[row - 1][column - 1]"
-              />
+              @if (isEditable(row - 1, column - 1)) {
+                <input
+                  type="number"
+                  inputmode="numeric"
+                  [attr.aria-label]="row + ' умножить на ' + column"
+                  [class.invalid-answer]="answerForm[row - 1][column - 1]().invalid()"
+                  [formField]="answerForm[row - 1][column - 1]"
+                />
+              } @else {
+                {{ row * column }}
+              }
             </td>
           }
         </tr>
       }
     </tbody>
   </table>
+
+  @if (gameStatus() === 'won') {
+    <section class="result-message success-message" aria-live="polite">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="52" />
+        <path d="m60 24 8 21 23 1-18 14 6 23-19-13-19 13 6-23-18-14 23-1z" />
+      </svg>
+      <div>
+        <h2>Молодец!</h2>
+        <p>Ты прошел таблицу.</p>
+      </div>
+    </section>
+  } @else if (gameStatus() === 'lost') {
+    <section class="result-message failure-message" aria-live="polite">
+      <h2>Не сдавайся!</h2>
+      <p>Ты уже проделал хорошую работу. Попробуй ещё раз — у тебя всё получится.</p>
+      <button type="button" (click)="restartGame()">Начать заново</button>
+    </section>
+  }
 </main>
 
 <router-outlet />
